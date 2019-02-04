@@ -1,30 +1,55 @@
-//console.log("starting notes-app");
+//docs
+//run e.g node app.js --title="some title" --body="some body"
+
 const fs = require('fs');
 const os =require('os');
 
-//const myModule = require('./myModule.js');
+const yargs=require('yargs');
 
-// console.log(myModule.addNote());
+const notes = require('./notes.js');
 
-var user=os.userInfo();
-var command = process.argv[2];
-console.log(process.argv);
+const argv = yargs.argv;
+var command = argv._[0];
 
 if(command === 'add'){
-	console.log('add command executed');
+	var note=notes.addNote(argv.title,argv.body);
+	if(note){
+		console.log("note created");
+		logNote(note);
+	}
+	else{
+		console.log("note with same title exists");
+	}
 }
 else if(command === 'remove'){
-	console.log('remove command executed');
+	var removeNote = notes.removeNote(argv.title);
+	if(removeNote){
+		console.log("note removed");
+	}
+	else{
+		console.log("note not found");
+	}
 }
 else if(command === 'list'){
-	console.log('list command executed');
+	var allNotes = notes.getAll();
+	console.log("Displaying all notes...");
+	allNotes.forEach((note) => notes.logNote(note));
 }
 else if(command === 'read'){
-	console.log('read command executed');
+	var note=notes.readNote(argv.title);
+	if(note){
+		console.log("note");
+		logNote(note);
+	}
+	else{
+		console.log("note not found");
+	}
 }
 else{
 	console.log('invalid command');
 }
+
+
 
 // fs.appendFile('message.txt','Hello this is my first node.js script',function(err){
 // 	if(err){
